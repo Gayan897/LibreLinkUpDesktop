@@ -63,5 +63,9 @@
     "Custom Alert Sound": "Eigener Alarmton",
     "ALERT_DESCRIPTION": "LibreLinkUpDesktop kann warnen, wenn der Blutzuckerspiegel außerhalb des normalen Bereichs liegt. Der Zielbereich wird von LibreLinkUp übernommen und kann unten bei Bedarf geändert werden.",
     "Alert": "Alarm",
-    "Max Value": "Hoher Wert"
+    "Max Value": "Hoher Wert",
+    "French": "Französisch",
+    "Italian": "Italienisch",
+    "Tamil": "Tamilisch",
+    "Swedish": "Schwedisch"
 }
