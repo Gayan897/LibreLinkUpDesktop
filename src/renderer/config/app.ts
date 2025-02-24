@@ -4,6 +4,7 @@ type DropdownConfigType = {
 }
 
 const countries: DropdownConfigType[] = [
+  { value: 'global', label: 'Global' },
   { value: 'de', label: 'Germany' },
   { value: 'eu', label: 'European Union' },
   { value: 'eu2', label: 'European Union 2' },
