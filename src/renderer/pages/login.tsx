@@ -51,7 +51,7 @@ export default function LoginPage() {
     defaultValues: {
       username: "",
       password: "",
-      country: "",
+      country: "global",
       language: "",
     },
   })
@@ -68,7 +68,8 @@ export default function LoginPage() {
     if (authData) {
       const token = authData?.token || ''
       const accountId = authData?.accountId || ''
-      login(token, values.country, values.language, accountId)
+      const accountCountry = authData?.accountCountry || values.country
+      login(token, accountCountry, values.language, accountId)
       navigate('/dashboard')
     } else {
       toast.error("Invalid credentials.")

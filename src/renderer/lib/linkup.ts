@@ -4,6 +4,9 @@ import { hash256 } from './utils'
 const BASE_URL = 'https://api-COUNTRY_CODE.libreview.io/llu'
 
 const getBaseUrl = (countryCode: string): string => {
+  if(countryCode === 'global') {
+    return BASE_URL.replace('-COUNTRY_CODE', '')
+  }
   return BASE_URL.replace('COUNTRY_CODE', countryCode)
 }
 
@@ -20,12 +23,14 @@ type GetGeneralRequest = {
 }
 
 export async function getAuthToken(request: LoginAttemptRequest): Promise<{
-  token: string, accountId: string
-}|null> {
+  token: string, accountId: string, accountCountry: string,
+} | null> {
   try {
-    const response = await axios({
+    let baseUrl = getBaseUrl(request.country);
+
+    let response = await axios({
       method: 'post',
-      baseURL: getBaseUrl(request.country),
+      baseURL: baseUrl,
       url: '/auth/login',
       data: {
         email: request.username,
@@ -39,17 +44,40 @@ export async function getAuthToken(request: LoginAttemptRequest): Promise<{
         'Accept-Encoding': 'gzip',
         Connection: 'keep-alive',
       },
-    })
+    });
+
+    if (response.data?.status === 0 && response.data?.data?.redirect) {
+      baseUrl = getBaseUrl(response.data.data.region);
+
+      response = await axios({
+        method: 'post',
+        baseURL: baseUrl,
+        url: '/auth/login',
+        data: {
+          email: request.username,
+          password: request.password,
+        },
+        headers: {
+          product: 'llu.android',
+          version: '4.12.0',
+          Pragma: 'no-cache',
+          'Cache-Control': 'no-cache',
+          'Accept-Encoding': 'gzip',
+          Connection: 'keep-alive',
+        },
+      });
+    }
 
     return {
       token: response.data?.data?.authTicket?.token,
       accountId: response.data?.data?.user?.id,
-    }
+      accountCountry: response.data?.data?.user?.country?.toLowerCase(),
+    };
   } catch (error) {
-    console.log("Unable to get the token: ", error)
+    console.log("Unable to get the token: ", error);
   }
 
-  return null
+  return null;
 }
 
 export async function getCGMData(request: GetGeneralRequest): Promise<string|null> {
