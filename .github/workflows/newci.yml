@@ -1,0 +1,81 @@
+name: Cross-Platform Build
+
+on:
+  push:
+    branches:
+      - feature/build-actions
+    tags:
+      - 'v1.1*'  # Triggers on any tag push
+
+jobs:
+  build_on_windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install --prefer-offline --legacy-peer-deps
+
+      - name: Build the Package
+        run: npm run package
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          overwrite: true
+          path: ./release-builds/windows/  # Adjusted path
+
+  build_on_ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install --prefer-offline --legacy-peer-deps
+
+      - name: Build the Package
+        run: npm run package
+
+      - name: Upload Ubuntu Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-installer
+          overwrite: true
+          path: ./release-builds/linux/  # Corrected path
+
+  build_on_mac:
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install --prefer-offline --legacy-peer-deps
+
+      - name: Build the Package
+        run: npm run package
+
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-installer
+          overwrite: true
+          path: ./release-builds/mac/  # Adjusted path
