@@ -5,7 +5,7 @@ on:
     branches:
       - feature/build-actions
     tags:
-      - 'v1.0.0'  # Triggers on any tag pus
+      - 'v1.1*'  # Triggers on any tag push
 
 jobs:
   build_on_windows:
@@ -21,7 +21,6 @@ jobs:
           key: windows-node-${{ hashFiles('/package-lock.json') }}
           restore-keys: |
             windows-node-
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -39,7 +38,7 @@ jobs:
           name: windows-installer-ia32-setup
           path: release/build/LibreLinkUpDesktop-0.1.13-ia32-setup.exe # Adjust the path based on actual output
           overwrite: true
-          
+
   build_on_ubuntu:
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +52,6 @@ jobs:
           key: ubuntu-node-${{ hashFiles('/package-lock.json') }}
           restore-keys: |
             ubuntu-node-
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -85,7 +83,6 @@ jobs:
           key: mac-node-${{ hashFiles('/package-lock.json') }}
           restore-keys: |
             mac-node-
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -102,4 +99,4 @@ jobs:
         with:
           name: mac-installer-x64
           path: release/build/LibreLinkUpDesktop-0.1.13-x64.dmg  # Adjust path based on actual output
-          overwrite: true
+          overwrite: true
