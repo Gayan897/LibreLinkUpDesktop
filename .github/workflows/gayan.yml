@@ -5,7 +5,7 @@ on:
     branches:
       - feature/build-actions
     tags:
-      - 'v1.0.0*'  # Triggers on any tag push
+      - 'v1.1*'  # Triggers on any tag push
 
 jobs:
   build_on_windows:
