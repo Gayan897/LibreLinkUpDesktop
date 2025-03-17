@@ -3,7 +3,7 @@ name: Cross-Platform Build
 on:
   push:
     branches:
-      - gayan_feature/build-action
+      - gayan-feature-build
     tags:
       - 'v1.1*'  # Triggers on any tag push
 
