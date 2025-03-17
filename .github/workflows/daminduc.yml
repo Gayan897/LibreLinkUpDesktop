@@ -44,6 +44,37 @@ jobs:
             release/build/**/*.appx
           overwrite: true
 
+  build_on_ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ubuntu-node-${{ hashFiles('/package-lock.json') }}
+          restore-keys: |
+            ubuntu-node-
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install --prefer-offline --legacy-peer-deps
+
+      - name: Build the Package
+        run: npm run package
+
+      - name: Upload Ubuntu Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-installer-appimage
+          path: release/build/**
+          overwrite: true
+
   build_on_mac:
     runs-on: macOS-latest
     steps:
