@@ -1,0 +1,107 @@
+name: Cross-Platform Build
+on:
+  push:
+    branches:
+      - gayan_feature/build-action
+    tags:
+      - 'v1.1*'
+jobs:
+  build_on_windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: windows-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            windows-node-
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Dependencies
+        run: npm install --prefer-offline --legacy-peer-deps
+      - name: Install Windows Build Tools
+        run: |
+          npm install --global --production windows-build-tools
+          npm install --global electron-builder
+      - name: Build EXE Package
+        run: npm run package
+      - name: Build MSI Package
+        run: npm run package:msi
+      - name: Build APPX Package
+        run: npm run package:appx
+      - name: Upload Windows Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installers
+          path: |
+            release/build/**/*.exe
+            release/build/**/*.msi
+            release/build/**/*.appx
+          overwrite: true
+
+  build_on_ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ubuntu-node-${{ hashFiles('/package-lock.json') }}
+          restore-keys: |
+            ubuntu-node-
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install --prefer-offline --legacy-peer-deps
+
+      - name: Build the Package
+        run: npm run package
+
+      - name: Upload Ubuntu Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-installer-appimage
+          path: release/build/**
+          overwrite: true
+
+  build_on_mac:
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: mac-node-${{ hashFiles('/package-lock.json') }}
+          restore-keys: |
+            mac-node-
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install --prefer-offline --legacy-peer-deps
+
+      - name: Build the Package
+        run: npm run package
+
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-installer-x64
+          path: release/build/**
+          overwrite: true
