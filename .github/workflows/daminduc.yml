@@ -29,14 +29,14 @@ jobs:
       - name: Install Dependencies
         run: npm install --prefer-offline --legacy-peer-deps || exit 0  # Error handling
 
-      - name: Build the Package
-        run: npm run package
+      - name: Build all the Packages
+        run: npm run package-all
 
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows-installer-ia32-setup
-          path: release/build/LibreLinkUpDesktop-0.1.13-ia32-setup.exe # Adjust the path based on actual output
+          name: windows-installer
+          path: release/build/**
           overwrite: true
 
   build_on_ubuntu:
